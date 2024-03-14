@@ -12,6 +12,9 @@ import { loadObj, matrixApply } from '../views/matrixApply.js';
 import { extrudeShape } from '../views/extrudeShape/extrudeShape.js';
 import { addLights } from '../views/light/lightSetup.js';
 import { extrudeInit, extrudeMash } from '../views/extrudeMesh/extrudeMesh.js';
+import { initMine } from '../views/mine/mine.js';
+import { addAxesHelper } from '../views/utils/helpers/addAxesHelper.js';
+import { addBoundingBox } from '../views/addBoundingBox/addBoundingBox.js';
 
 
 export default class Home extends Component {
@@ -25,10 +28,13 @@ export default class Home extends Component {
         threeViewer.initViewer()
         window.threeViewer = threeViewer
 
-        let cubeMesh =  createCube()
-        threeViewer.scene.add(cubeMesh)
+        addLights(threeViewer.scene)
 
-        extrudeInit(threeViewer)
+        addAxesHelper(threeViewer)
+        
+        // initMine(threeViewer)
+        addBoundingBox(threeViewer)
+
     }
     render() {
         return (

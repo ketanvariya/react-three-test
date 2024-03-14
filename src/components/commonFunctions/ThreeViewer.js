@@ -9,7 +9,7 @@ class ThreeViewer {
         this.element = params.element
         this.canvasWidth = this.element.clientWidth
         this.canvasHeight = this.element.clientHeight
-        this.camera = new THREE.PerspectiveCamera(50, this.canvasWidth / this.canvasHeight, 0.1, 10000)
+        this.camera = new THREE.PerspectiveCamera(100, this.canvasWidth / this.canvasHeight, 0.1, 10000)
         this.scene = new THREE.Scene()
 
         this.renderer = new THREE.WebGLRenderer({
