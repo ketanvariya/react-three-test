@@ -1,0 +1,16 @@
+{
+  "env": [
+    "browser",
+    "development",
+    "module"
+  ],
+  "imports": {
+    "bootstrap": "https://ga.jspm.io/npm:bootstrap@5.3.2/dist/js/bootstrap.esm.js",
+    "jquery": "https://ga.jspm.io/npm:jquery@3.7.1/dist/jquery.js"
+  },
+  "scopes": {
+    "https://ga.jspm.io/": {
+      "@popperjs/core": "https://ga.jspm.io/npm:@popperjs/core@2.11.8/lib/index.js"
+    }
+  }
+}
