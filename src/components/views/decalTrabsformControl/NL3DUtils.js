@@ -8,7 +8,7 @@ import { ElementDecal } from './ElementDecal.js';
 import { ImageProcess } from './imageUtils/ImageProcess.js';
 
 export function addRefSphere(inPosition, inParent, inColor = "red") {
-    let sphereGeometry = new THREE.SphereGeometry(0.002, 32, 32);
+    let sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
     let sphereMaterial = new THREE.MeshBasicMaterial({ color: inColor });
     let sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphereMesh.position.copy(inPosition)
