@@ -8,8 +8,11 @@ export default class HomeView extends Component {
     render() {
         return (
             <div >
+              <img src="./assets/three/normal.png" width={"100px"} height={"100px"} alt="" />
               <div className='container' >
                 <div id='container3D'></div>
+              </div>
+              <div id= "navigationCube3D" className='navigationCube'>
               </div>
             </div>
           )
