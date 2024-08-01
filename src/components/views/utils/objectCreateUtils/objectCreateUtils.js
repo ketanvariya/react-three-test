@@ -40,5 +40,29 @@ export function createOpenCubeGeometry(width, height, depth) {
     return geometry;
 }
 
+export function createCube(){
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.name = "cube1"
+    return cube
+}
+
+export function createLine(inPo,inColor = 0x0000ff){
+
+    const material = new THREE.LineBasicMaterial({ color: inColor });
+
+    let points = []
+    for(let po of inPo){
+        points.push(new THREE.Vector3(po.x, po.y, po.z));
+    }
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+    const line = new THREE.Line(geometry, material);
+
+    return line
+}
+
 
 
