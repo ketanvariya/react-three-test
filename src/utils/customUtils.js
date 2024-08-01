@@ -12,54 +12,17 @@ import * as THREE from 'three'
 import { DCShape } from "../threeCustom/DCShape";
 import { environmentVariable } from "../variables";
 
-export const addShapeToSceneNew = (openCascade, shape, color = undefined, facesColor, parent, inName, inMat = undefined, inSequenceName, layer = 1) => {
 
-    let geometries = visualize(openCascade, shape, layer, color);
+Array.prototype.remove = function (inElement) {
 
-    let shape3js = new DCShape();
-    let faces = geometries[0]
-    for (let i = 0; i < faces.length; i++) {
-        let f = faces[i];
-        shape3js.addFace(f);
-        f.sequenceFaceName = `${i}_${inSequenceName}`
+    // This function will delete first element which is equal to inElement
+    // If inElement is not in array, nothing happened and return false
+    let index = this.indexOf(inElement)
+    if (index != -1) {
+        this.splice(index, 1)
+        return true
     }
-    shape3js.layers.set(layer)
-    shape3js.name = inName;
-
-    let hexColor = environmentVariable.modelColor
-    if (color) {
-        hexColor = color.getHex()
-    }
-    if (shape3js) {
-        let allFaces = shape3js.getAllFaces()
-        for (let i = 0; i < allFaces.length; i++) {
-            let face = allFaces[i];
-            face.material.color.set(facesColor[i] ? facesColor[i] : hexColor)
-            face.material.metalness = 0.5
-            face.material.roughness = 0.8
-            face.material.originalColor = face.material.color.clone()
-        }
-    }
-    parent.add(shape3js)
-    if (inMat){
-        shape3js.applyMatrix4(inMat)
-    }
-
-    shape3js.userData["ocShape"] = shape
-
-    const clonedShape = new openCascade.BRepBuilderAPI_Copy_2(shape,true,true);
-    const result = clonedShape.Shape();
-    shape3js.userData["ocShapeCloned"] = result
-
-    shape3js.userData["facesColor"] = facesColor
-    shape3js.sequenceName = inSequenceName
-    shape3js.commonColor = hexColor
-    return shape3js
-}
-
-export function triggerStepFileChangeEvent() {
-    let event = new Event('stepFile-change');
-    document.dispatchEvent(event);
+    return false
 }
 
 export function removeObjWithChildren(obj) {
@@ -77,24 +40,6 @@ export function removeObjWithChildren(obj) {
         obj.parent.remove(obj)
     }
 }
-export function removeObjWithChildrenWithMoveObjects(obj,pickingObjectsForMove) {
-    pickingObjectsForMove.splice(pickingObjectsForMove.indexOf(obj), 1)
-
-    if (!obj) return
-    if (obj.children.length > 0) {
-        for (var x = obj.children.length - 1; x >= 0; x--) {
-            removeObjWithChildren(obj.children[x])
-        }
-    }
-    if (obj.isMesh) {
-        obj.geometry.dispose();
-        obj.material.dispose();
-    }
-    if (obj.parent) {
-        obj.parent.remove(obj)
-    }
-}
-
 export function moveObjectToCenter(inObject, YBottomBool = false) {
     //DESCRIPTION : it will take model and if object position is not center then it will make object in center 
 
@@ -127,47 +72,8 @@ export function moveObjectToCenter(inObject, YBottomBool = false) {
     return parent
 }
 
-export function getIntersectingData(intersection) {
-
-    if (intersection.length > 0) {
-        // set the position of the cylinder
-        let intersectionPoint = intersection[0].point
-
-        // get the vector normal to face
-        var normalVectorWithoutRotation = intersectionPoint.face.normal.clone();
-        var normalVector = intersectionPoint.face.normal.clone();
-
-        // get rotation in case of object rotation 
-        var objRotation = intersectionPoint.object.rotation;
-
-        // Apply mesh rotation to vector
-        normalVector.applyEuler(objRotation);
-
-        // the object points up 
-        var up = intersectionPoint.object.up;
-
-        // determine an axis to rotate around
-        // cross will not work if normalVector == +up or -up, so there is a special case
-        if (normalVector.y == 1 || normalVector.y == -1) {
-            var axis = new THREE.Vector3(1, 0, 0)
-        }
-        else {
-            var axis = new THREE.Vector3().crossVectors(up, normalVector);
-            axis.normalize();
-        }
-
-        // determine the amount to rotate
-        // var radians = Math.acos( normalVector.dot( up ) );
-        var radians = normalVector.angleTo(up)
-
-
-        // return intersectionPoint
-        return { intersectionPoint, axis, radians, normalVector, normalVectorWithoutRotation }
-    }
-}
-
 export let logMessage = (warnMessage, ...extraMessage) => {
-    console.error("DRIVE-CONFIGURATOR :\n" + warnMessage, extraMessage)
+    console.error("PROJECT :\n" + warnMessage, extraMessage)
 }
 export let getWorldPointData = (obj) => {
     const position = new THREE.Vector3(); // create one and reuse it
@@ -327,17 +233,6 @@ export function findPointAtDistInDirection(origin, dist, dir) {
     let point = origin.clone()
     point.add(dir.clone().setLength(dist))
     return point
-}
-Array.prototype.remove = function (inElement) {
-
-    // This function will delete first element which is equal to inElement
-    // If inElement is not in array, nothing happened and return false
-    let index = this.indexOf(inElement)
-    if (index != -1) {
-        this.splice(index, 1)
-        return true
-    }
-    return false
 }
 
 export function fitCameraAndUpdateSliderZoom(viewer, boundingBox, direction) {
@@ -500,26 +395,7 @@ export function cloneDeep(obj) {
     }
     return temp;
 }
-export function alterShowOriginalShape(show,threeViewer) {
-    let shape = threeViewer.scene.getObjectByName("shape")
-    let referenceShape = threeViewer.scene.getObjectByName("referenceShape")
-    if (shape) threeViewer.scene.getObjectByName("shape").visible = show;
-    if (referenceShape) threeViewer.scene.getObjectByName("referenceShape").visible = !show;
-  }
 
-export function convertTranslationTo3Vec(inTranslation) {
-    return new THREE.Vector3(inTranslation.X(), inTranslation.Y(), inTranslation.Z())
-}
-export function convert_gp_Mat_THREEJS_Mat4(inGpMat) {
-    let mat4 = new THREE.Matrix4();
-    mat4.set(
-        inGpMat.Value(1, 1), inGpMat.Value(1, 2), inGpMat.Value(1, 3), inGpMat.Value(1, 4),
-        inGpMat.Value(2, 1), inGpMat.Value(2, 2), inGpMat.Value(2, 3), inGpMat.Value(2, 4),
-        inGpMat.Value(3, 1), inGpMat.Value(3, 2), inGpMat.Value(3, 3), inGpMat.Value(3, 4),
-        inGpMat.Value(4, 1), inGpMat.Value(4, 2), inGpMat.Value(4, 3), inGpMat.Value(4, 4)
-    )
-    return mat4
-}
 export function getShapeCenterPoint(obj) {
     /**
      * This function return center point of object
@@ -535,15 +411,7 @@ export function getShapeCenterPoint(obj) {
 
     return centerPoint;
 }
-//Prototype to remove object from array, removes first
-//matching object only
-// Array.prototype.remove = function (v) {
-//     if (this.indexOf(v) != -1) {
-//         this.splice(this.indexOf(v), 1);
-//         return true;
-//     }
-//     return false;
-// }
+
 export function getBoundingBox(obj) {
     /**
      * This function return center point of object
