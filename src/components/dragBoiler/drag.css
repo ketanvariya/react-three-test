@@ -1,0 +1,23 @@
+.draggable {
+    width: 200px;
+    height: 200px;
+    background-color: lightblue;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  }
+  
+  .drag-button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: move;
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 3px;
+  }
+  
