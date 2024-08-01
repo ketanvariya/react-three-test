@@ -104,3 +104,15 @@ export function readBlob(blob) {
       reader.readAsText(blob);
     });
   }
+
+export function addRefSphere(inPosition = new THREE.Vector3(0, 0, 0), size) {
+    const geometry = new THREE.SphereGeometry(size, 32, 16);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.name = 'refSphere';
+    sphere.position.x = inPosition.x;
+    sphere.position.y = inPosition.y;
+    sphere.position.z = inPosition.z;
+    return sphere;
+}
+
