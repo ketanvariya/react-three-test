@@ -18,3 +18,11 @@ canvas {
 	width: 100vw;
 	height: 100vh;
 }
+.navigationCube{
+	width: 300px;
+	height: 300px;
+	z-index: 99999;
+	background-color: red;
+	top: 0;
+	right: 0;
+}
